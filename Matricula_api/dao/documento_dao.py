@@ -59,3 +59,5 @@ class DocumentoDAO:
     # COUNT
     def total(self):
         return len(self.__bd)
+    
+#documento_dao parte ana
