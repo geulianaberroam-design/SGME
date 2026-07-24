@@ -71,3 +71,5 @@ class ApoderadoDAO:
     # COUNT
     def total(self):
         return len(self.__bd)
+
+#apoderado dao parte ana
