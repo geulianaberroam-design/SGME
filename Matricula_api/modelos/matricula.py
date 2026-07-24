@@ -14,7 +14,9 @@ class Matricula:
         
     def obtener_resumen(self):
          """Devuelve un resumen de matricula."""
-        return(f"{self.estudiantes.nombres} {self.estudiantes.apellidos}")
+         return(
+            f"{self.estudiantes.nombres} {self.estudiantes.apellidos}"
+            f"{self.grado_seccion.grado} {self.grado_seccion.seccion}")
     
     def __str__(self):
         """Devuelve una representación legible de la matrícula."""
