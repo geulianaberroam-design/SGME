@@ -1,11 +1,17 @@
 class Persona:
 
+    class Persona:
+     """Representa a una persona dentro del sistema de matrícula."""
+
     def __init__(self, dni, nombres, apellidos, telefono, email):
-        self.__dni = dni
-        self.__nombres = nombres
-        self.__apellidos = apellidos
-        self.__telefono = telefono
-        self.__email = email
+        """
+        Inicializa una nueva persona.
+        """
+        self.__dni = dni.strip()
+        self.__nombres = nombres.strip().title()
+        self.__apellidos = apellidos.strip().title()
+        self.__telefono = telefono.strip()
+        self.__email = email.strip().lower()
 
     # GETTERS Y SETTERS
 
@@ -15,7 +21,7 @@ class Persona:
 
     @dni.setter
     def dni(self, valor):
-        self.__dni = valor
+        self.__dni = valor.strip()
 
     @property
     def nombres(self):
@@ -23,7 +29,7 @@ class Persona:
 
     @nombres.setter
     def nombres(self, valor):
-        self.__nombres = valor
+        self.__nombres = valor.strip().title()
 
     @property
     def apellidos(self):
@@ -31,7 +37,7 @@ class Persona:
 
     @apellidos.setter
     def apellidos(self, valor):
-        self.__apellidos = valor
+        self.__apellidos = valor.strip().title()
 
     @property
     def telefono(self):
@@ -39,7 +45,7 @@ class Persona:
 
     @telefono.setter
     def telefono(self, valor):
-        self.__telefono = valor
+        self.__telefono = valor.strip()
 
     @property
     def email(self):
@@ -47,11 +53,20 @@ class Persona:
 
     @email.setter
     def email(self, valor):
-        self.__email = valor
+        self.__email = valor.strip().lower()
 
-    # Método polimórfico
     def obtener_descripcion(self):
+        """
+        Devuelve una descripción de la persona.
+        """
         return f"Persona: {self.nombres} {self.apellidos}"
 
     def __str__(self):
-        return f"{self.nombres} {self.apellidos} - DNI: {self.dni}"
+        """
+        Devuelve una representación legible de la persona.
+        """
+        return (
+            f"{self.nombres} {self.apellidos} | "
+            f"DNI: {self.dni} | "
+            f"Teléfono: {self.telefono}"
+        )
