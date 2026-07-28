@@ -1,4 +1,4 @@
-ffrom modelos.grado_seccion import GradoSeccion
+from modelos.grado_seccion import GradoSeccion
 
 
 class GradoSeccionDAO:
