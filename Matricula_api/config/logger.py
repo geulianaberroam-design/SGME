@@ -1,61 +1,20 @@
-from modelos.documento import Documento
+import logging
+import os
 
+# Crear la carpeta de logs si aún no existe
+LOGS_DIR = "logs"
+if not os.path.exists(LOGS_DIR):
+    os.makedirs(LOGS_DIR)
 
-class DocumentoDAO:
+# Configuración del formato del Logger
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - [%(levelname)s] - %(message)s",
+    handlers=[
+        logging.FileHandler(os.path.join(LOGS_DIR, "app.log"), encoding="utf-8"),
+        logging.StreamHandler()  # Para ver también los mensajes en la consola de VS Code
+    ]
+)
 
-    def __init__(self):
-        self.__bd = []
-        self.__cid = 1
-
-    # CREATE
-    def insertar(self, documento):
-
-        documento.id = self.__cid
-        self.__cid += 1
-
-        self.__bd.append(documento)
-
-        return documento
-
-    # READ ALL
-    def obtener_todos(self):
-        return self.__bd
-
-    # READ
-    def buscar_por_id(self, id):
-
-        for documento in self.__bd:
-            if documento.id == id:
-                return documento
-
-        return None
-
-    # UPDATE
-    def actualizar(self, id, estado):
-
-        documento = self.buscar_por_id(id)
-
-        if documento:
-
-            documento.estado = estado
-
-            return True
-
-        return False
-
-    # DELETE
-    def eliminar(self, id):
-
-        documento = self.buscar_por_id(id)
-
-        if documento:
-
-            self.__bd.remove(documento)
-
-            return True
-
-        return False
-
-    # COUNT
-    def total(self):
-        return len(self.__bd)
+# Instancia global para usar en todo el proyecto
+logger = logging.getLogger("SGME_Logger")
