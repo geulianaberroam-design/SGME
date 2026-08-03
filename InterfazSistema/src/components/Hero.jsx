@@ -5,34 +5,29 @@ function Hero() {
     // Tarjeta principal de bienvenida
     <div className="hero">
 
-      {/* Título */}
+      {/* Título de la sección */}
+      <small className="panel-control">
+        Panel de Control
+      </small>
+
+      {/* Título principal */}
       <h1>
-
         Bienvenido al Sistema de Gestión de Matrícula Escolar
-
       </h1>
 
       {/* Descripción */}
       <p>
-
         Año Escolar 2025 · Proceso de Matrícula en Curso
-
       </p>
 
-      {/* Botón para nueva matrícula */}
-      <button className="btn btn-success me-2">
-
-        Nueva Matrícula
-
+      {/* Botones de acción */}
+      <button className="btn btn-success btn-accion me-2">
+           + Nueva Matrícula
       </button>
 
-      {/* Botón para registrar estudiante */}
-      <button className="btn btn-light">
-
-        Registrar Estudiante
-
-      </button>
-
+      <button className="btn btn-registrar btn-accion">
+            Registrar Estudiante
+       </button>
     </div>
 
   );

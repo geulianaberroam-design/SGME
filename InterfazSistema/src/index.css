@@ -5,6 +5,44 @@ body{
     font-family:Arial, Helvetica, sans-serif;
 }
 
+/* Botón Registrar Estudiante */
+.btn-registrar{
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+/* Efecto al pasar el mouse */
+.btn-registrar:hover{
+    background-color: #2563eb;
+    color: white;
+}
+
+/* Estilo común para ambos botones */
+.btn-accion{
+    width: 160px;
+    height: 42px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    border-radius: 8px;
+}
+.btn-success{
+    background-color: #22c55e;
+    border: none;
+}
+
+.btn-success:hover{
+    background-color: #16a34a;
+}
 /* Barra lateral */
 .sidebar{
     width:240px;
@@ -55,6 +93,24 @@ body{
     justify-content:space-between;
     align-items:center;
 }
+/* Título del sistema */
+.header h4{
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Subtítulo */
+.header small{
+    font-size: 14px;
+    color: #7d8ca3;
+}
+
+/* Fecha */
+.header .fecha{
+    font-size: 14px;
+    color: #6b7280;
+}
 
 /* Tarjeta de bienvenida */
 .hero{
@@ -63,6 +119,12 @@ body{
     border-radius:20px;
     padding:40px;
     margin-top:20px;
+}
+.hero h1{
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    white-space: nowrap;
 }
 /* ===========================
    Sidebar colapsable
@@ -112,7 +174,6 @@ body{
 .menu-btn:hover{
     color:#1d3b8f;
 }
-
 /* Contenedor principal */
 .app-container{
     display: flex;
@@ -139,3 +200,13 @@ body{
     transition:all .3s ease;
     overflow:auto;
 }
+
+/* Texto "Panel de Control" */
+.panel-control{
+    display:block;
+    font-size:15px;
+    font-weight:600;
+    color:#dbeafe; /* Un azul claro o blanco suave */
+    margin-bottom:10px;
+}
+

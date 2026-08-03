@@ -8,7 +8,7 @@ function Header({ collapsed, setCollapsed }) {
     // Contenedor principal del encabezado
     <div className="header">
 
-      {/* Agrupa el botón del menú y el título */}
+      {/* Agrupa el botón del menú y la información del sistema */}
       <div className="d-flex align-items-center">
 
         {/* Botón que permite mostrar u ocultar el menú lateral */}
@@ -25,10 +25,11 @@ function Header({ collapsed, setCollapsed }) {
         {/* Información del sistema */}
         <div className="ms-3">
 
+          {/* Título del sistema */}
           <h4>
             Sistema de Gestión de Matrícula Escolar
           </h4>
-
+          
           <small>
             Año Escolar 2025 · Colegio San Martín de Porres
           </small>
@@ -38,7 +39,7 @@ function Header({ collapsed, setCollapsed }) {
       </div>
 
       {/* Fecha actual */}
-      <div>
+      <div className="fecha">
         Domingo, 2 de agosto de 2026
       </div>
 
