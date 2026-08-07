@@ -1,36 +1,41 @@
-import pyodbc
+import psycopg2
+
 
 def obtener_conexion():
     """
-    Establece la conexión con la base de datos SQL Server 'MatriculaEscolar'.
-    Retorna el objeto conexion o None si ocurre un fallo.
+    Establece la conexión con la base de datos PostgreSQL.
+    Retorna el objeto conexión o None si ocurre un error.
     """
-    # Tu servidor exacto de SQL Server
-    servidor = r"DESKTOP-LOJPVLR\SQLEXPRESS"  
-    base_datos = "MatriculaEscolar"
-    
-    cadena_conexion = (
-        f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-        f"SERVER={servidor};"
-        f"DATABASE={base_datos};"
-        f"Trusted_Connection=yes;"
-    )
-    
+
+    host = "localhost"
+    port = "5432"
+    database = "MatriculaEscolar"      # Cambia si tu BD tiene otro nombre
+    user = "postgres"                  # Cambia por tu usuario
+    password = "root"         # Cambia por tu contraseña
+
     try:
-        conexion = pyodbc.connect(cadena_conexion)
+        conexion = psycopg2.connect(
+            host=host,
+            port=port,
+            dbname=database,
+            user=user,
+            password=password
+        )
         return conexion
+
     except Exception as e:
-        print(f"❌ Error crítico al conectar con la BD '{base_datos}': {e}")
+        print(f"❌ Error al conectar a PostgreSQL: {e}")
         return None
 
-# --- BLOQUE DE PRUEBA DE CONEXIÓN ---
+
+# Prueba de conexión
 if __name__ == "__main__":
     print("Iniciando prueba de conexión...")
-    con = obtener_conexion()
-    
-    if con:
-        print("✅ ¡Conexión exitosa a la base de datos MatriculaEscolar!")
-        con.close()
+
+    conexion = obtener_conexion()
+
+    if conexion:
+        print("✅ Conexión exitosa a PostgreSQL.")
+        conexion.close()
     else:
-        print("⚠️ No se pudo establecer la conexión. Verifica SQL Server.")
- 
+        print("❌ No fue posible conectarse.")

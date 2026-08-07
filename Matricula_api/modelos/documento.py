@@ -1,56 +1,78 @@
-class Documento:
-    """Clase que representa un documento o trámite asociado a un estudiante."""
+from modelos.documento import Documento
 
-    def __init__(self, tipo="", estado="", estudiante=None, id=None):
-        """
-        Inicializa una nueva instancia de la clase Documento.
 
-        Parámetros:
-            tipo (str): El tipo de documento (ej. 'Certificado', 'Matrícula').
-            estado (str): El estado actual (ej. 'Pendiente', 'Aprobado').
-            estudiante (object/dict/str): El estudiante asociado al documento.
-            id (int/str, opcional): Identificador único del documento.
-        """
-        self.id = id
-        self.tipo = tipo
-        self.estado = estado
-        self.estudiante = estudiante
+class DocumentoDAO:
+    """
+    Gestiona las operaciones CRUD de los documentos
+    almacenados en memoria.
+    """
 
-    def __str__(self):
-        """Devuelve una representación en cadena de texto legible del documento."""
-        doc_id = f"[{self.id}]" if self.id is not None else "[Sin ID]"
-        return (f"{doc_id} "
-                f"Documento: {self.tipo} | "
-                f"Estado: {self.estado}")
+    def __init__(self):
+        """
+        Inicializa la lista de documentos y el contador de IDs.
+        """
+        self.__bd = []
+        self.__cid = 1
 
-    # --- 1. Objeto -> Diccionario (Necesario para serializar a JSON) ---
-    def to_dict(self):
+    # CREATE
+    def insertar(self, documento):
         """
-        Convierte la instancia de Documento a un diccionario.
-        Si 'estudiante' es un objeto con método to_dict(), también lo serializa.
+        Registra un nuevo documento.
         """
-        estudiante_data = self.estudiante
-        if hasattr(self.estudiante, "to_dict"):
-            estudiante_data = self.estudiante.to_dict()
+        documento.id = self.__cid
+        self.__cid += 1
 
-        return {
-            "id": self.id,
-            "tipo": self.tipo,
-            "estado": self.estado,
-            "estudiante": estudiante_data
-        }
+        self.__bd.append(documento)
 
-    # --- 2. Diccionario -> Objeto (Constructor alternativo desde JSON/Dict) ---
-    @classmethod
-    def from_dict(cls, datos: dict):
+        return documento
+
+    # READ ALL
+    def obtener_todos(self):
         """
-        Crea una nueva instancia de Documento a partir de un diccionario.
+        Devuelve la lista de todos los documentos registrados.
         """
-        doc = cls(
-            tipo=datos.get("tipo", ""),
-            estado=datos.get("estado", ""),
-            estudiante=datos.get("estudiante", None)
-        )
-        # Asignamos el ID original
-        doc.id = datos.get("id", None)
-        return doc
+        return self.__bd
+
+    # READ
+    def buscar_por_id(self, id):
+        """
+        Busca un documento por su identificador.
+        """
+        for documento in self.__bd:
+            if documento.id == id:
+                return documento
+
+        return None
+
+    # UPDATE
+    def actualizar(self, id, estado):
+        """
+        Actualiza el estado de un documento.
+        """
+        documento = self.buscar_por_id(id)
+
+        if documento:
+            documento.estado = estado
+            return True
+
+        return False
+
+    # DELETE
+    def eliminar(self, id):
+        """
+        Elimina un documento por su identificador.
+        """
+        documento = self.buscar_por_id(id)
+
+        if documento:
+            self.__bd.remove(documento)
+            return True
+
+        return False
+
+    # COUNT
+    def total(self):
+        """
+        Devuelve la cantidad total de documentos registrados.
+        """
+        return len(self.__bd)
