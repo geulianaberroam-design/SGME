@@ -166,15 +166,41 @@ while True:
 
                 print("\nNo se pudo registrar el estudiante.")
 
-
         # ==========================================
         # GRADO Y SECCIÓN
         # ==========================================
 
         case "3":
 
-            print("\n--- GRADO Y SECCIÓN ---")
-            print("Función en proceso...")
+            print("\n--- REGISTRAR GRADO Y SECCIÓN ---")
+
+            grado = input("Grado: ")
+            seccion = input("Sección: ")
+
+            grado_seccion = GradoSeccion(
+                grado=grado,
+                seccion=seccion
+            )
+
+            resultado = gradoDAO.insertar(grado_seccion)
+
+            if resultado:
+
+                logger.info(
+                    f"Se registró el grado y sección: "
+                    f"{grado_seccion.obtener_descripcion()}"
+                )
+
+                print("\nGrado y sección registrados correctamente.")
+                print("ID asignado:", grado_seccion.id)
+
+            else:
+
+                logger.error(
+                    "No se pudo registrar el grado y sección."
+                )
+
+                print("\nNo se pudo registrar el grado y sección.")
 
         # ==========================================
         # MATRÍCULA
