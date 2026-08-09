@@ -42,7 +42,7 @@ documentoDAO = DocumentoDAO()
 while True:
 
     print("\n===================================")
-    print(config.nombre)
+    print(config.nombre_sistema)
     print("Versión:", config.version)
     print("===================================")
 
@@ -92,10 +92,10 @@ while True:
                 logger.error("No se pudo registrar el apoderado.")
                 print("No se pudo registrar el apoderado.")
 
-
-        # ==========================================
-        # REGISTRAR ESTUDIANTE
-        # ==========================================
+   
+            # ==========================================
+            # REGISTRAR ESTUDIANTE
+            # ==========================================
 
         case "2":
 
@@ -109,6 +109,29 @@ while True:
             fecha_nac = input("Fecha de nacimiento (YYYY-MM-DD): ")
             direccion = input("Dirección: ")
 
+            # Buscar apoderado por DNI
+            dni_apoderado = input("DNI del apoderado: ")
+
+            apoderado = apoderadoDAO.buscar_por_dni(dni_apoderado)
+
+            if not apoderado:
+
+                print("\nNo existe un apoderado con ese DNI.")
+
+                logger.warning(
+                    f"No se encontró el apoderado con DNI {dni_apoderado}."
+                )
+
+                continue
+
+            print(
+                f"\nApoderado encontrado: "
+                f"{apoderado.nombres} {apoderado.apellidos}"
+            )
+
+            print(f"ID del apoderado: {apoderado.id}")
+
+            # Crear estudiante relacionado con el apoderado
             estudiante = Estudiante(
                 dni=dni,
                 nombres=nombres,
@@ -117,7 +140,7 @@ while True:
                 email=email,
                 fecha_nac=fecha_nac,
                 direccion=direccion,
-                id_apoderado=None
+                id_apoderado=apoderado.id
             )
 
             resultado = estudianteDAO.insertar(estudiante)
@@ -131,10 +154,16 @@ while True:
 
                 print("\nEstudiante registrado correctamente.")
                 print("ID asignado:", estudiante.id)
+                print(
+                    "Apoderado:",
+                    apoderado.nombres,
+                    apoderado.apellidos
+                )
 
             else:
 
                 logger.error("No se pudo registrar el estudiante.")
+
                 print("\nNo se pudo registrar el estudiante.")
 
 
@@ -147,7 +176,6 @@ while True:
             print("\n--- GRADO Y SECCIÓN ---")
             print("Función en proceso...")
 
-
         # ==========================================
         # MATRÍCULA
         # ==========================================
@@ -156,7 +184,6 @@ while True:
 
             print("\n--- MATRÍCULA ---")
             print("Función en proceso...")
-
 
         # ==========================================
         # PAGO
@@ -167,7 +194,6 @@ while True:
             print("\n--- PAGO ---")
             print("Función en proceso...")
 
-
         # ==========================================
         # DOCUMENTO
         # ==========================================
@@ -176,7 +202,6 @@ while True:
 
             print("\n--- DOCUMENTO ---")
             print("Función en proceso...")
-
 
         # ==========================================
         # LISTAR APODERADOS
@@ -189,14 +214,10 @@ while True:
             apoderados = apoderadoDAO.obtener_todos()
 
             if not apoderados:
-
                 print("No hay apoderados registrados.")
-
             else:
-
                 for apoderado in apoderados:
                     print(apoderado)
-
 
         # ==========================================
         # MOSTRAR LOGS
@@ -207,13 +228,11 @@ while True:
             print("\n========== LOGS ==========")
 
             try:
-
                 with open(
                     "logs/app.log",
                     "r",
                     encoding="utf-8"
                 ) as archivo:
-
                     contenido = archivo.read()
 
                     if contenido:
@@ -222,9 +241,7 @@ while True:
                         print("No existen registros.")
 
             except FileNotFoundError:
-
                 print("No existen logs todavía.")
-
 
         # ==========================================
         # SALIR
@@ -236,7 +253,6 @@ while True:
 
             print("\nGracias por usar el sistema.")
             break
-
 
         # ==========================================
         # OPCIÓN INVÁLIDA

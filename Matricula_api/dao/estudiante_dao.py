@@ -122,6 +122,7 @@ class EstudianteDAO:
                 )
 
                 estudiante.id = fila[0]
+                estudiante.id_apoderado = fila[8]
 
                 lista.append(estudiante)
 
@@ -184,8 +185,10 @@ class EstudianteDAO:
                 )
 
                 estudiante.id = fila[0]
+                estudiante.id_apoderado = fila[8]
 
                 return estudiante
+            
 
             return None
 
@@ -246,6 +249,7 @@ class EstudianteDAO:
                 )
 
                 estudiante.id = fila[0]
+                estudiante.id_apoderado = fila[8]
 
                 return estudiante
 
