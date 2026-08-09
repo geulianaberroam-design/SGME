@@ -3,3 +3,5 @@
 2026-08-09 03:45:59,440 - [ERROR] - No se pudo registrar el apoderado.
 2026-08-09 03:47:21,330 - [INFO] - Se registró un apoderado.
 2026-08-09 03:51:11,637 - [INFO] - El usuario salió del sistema.
+2026-08-09 04:45:59,338 - [WARNING] - No se encontró el apoderado con DNI s.
+2026-08-09 04:46:02,580 - [INFO] - El usuario salió del sistema.
