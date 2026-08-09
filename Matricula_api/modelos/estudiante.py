@@ -1,95 +1,32 @@
-from modelos.estudiante import Estudiante
+from modelos.persona import Persona
 
 
-class EstudianteDAO:
+class Estudiante(Persona):
     """
-    Gestiona las operaciones CRUD de los estudiantes
-    almacenados en memoria.
+    Representa los datos de un estudiante.
     """
 
-    def __init__(self):
-        """
-        Inicializa la lista de estudiantes y el contador de IDs.
-        """
-        self.__bd = []
-        self.__cid = 1
+    def __init__(
+        self,
+        dni="",
+        nombres="",
+        apellidos="",
+        telefono="",
+        email="",
+        fecha_nac=None,
+        direccion="",
+        id_apoderado=None,
+        id=None
+    ):
+        super().__init__(
+            dni=dni,
+            nombres=nombres,
+            apellidos=apellidos,
+            telefono=telefono,
+            email=email
+        )
 
-    # CREATE
-    def insertar(self, estudiante):
-        """
-        Registra un nuevo estudiante.
-        Verifica que el DNI no esté duplicado.
-        """
-        if self.buscar_por_dni(estudiante.dni):
-            raise Exception("El DNI ya está registrado.")
-
-        estudiante.id = self.__cid
-        self.__cid += 1
-
-        self.__bd.append(estudiante)
-
-        return estudiante
-
-    # READ ALL
-    def obtener_todos(self):
-        """
-        Devuelve la lista de todos los estudiantes.
-        """
-        return self.__bd
-
-    # READ
-    def buscar_por_id(self, id):
-        """
-        Busca un estudiante por su identificador.
-        """
-        for estudiante in self.__bd:
-            if estudiante.id == id:
-                return estudiante
-
-        return None
-
-    # READ
-    def buscar_por_dni(self, dni):
-        """
-        Busca un estudiante por su número de DNI.
-        """
-        for estudiante in self.__bd:
-            if estudiante.dni == dni:
-                return estudiante
-
-        return None
-
-    # UPDATE
-    def actualizar(self, id, telefono, email, direccion):
-        """
-        Actualiza el teléfono, correo y dirección de un estudiante.
-        """
-        estudiante = self.buscar_por_id(id)
-
-        if estudiante:
-            estudiante.telefono = telefono
-            estudiante.email = email
-            estudiante.direccion = direccion
-            return True
-
-        return False
-
-    # DELETE
-    def eliminar(self, id):
-        """
-        Elimina un estudiante por su identificador.
-        """
-        estudiante = self.buscar_por_id(id)
-
-        if estudiante:
-            self.__bd.remove(estudiante)
-            return True
-
-        return False
-
-    # COUNT
-    def total(self):
-        """
-        Devuelve la cantidad total de estudiantes registrados.
-        """
-        return len(self.__bd)
+        self.id = id
+        self.fecha_nac = fecha_nac
+        self.direccion = direccion
+        self.id_apoderado = id_apoderado

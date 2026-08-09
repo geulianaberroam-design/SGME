@@ -3,6 +3,7 @@ import os
 
 # Crear la carpeta de logs si aún no existe
 LOGS_DIR = "logs"
+
 if not os.path.exists(LOGS_DIR):
     os.makedirs(LOGS_DIR)
 
@@ -11,8 +12,11 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - [%(levelname)s] - %(message)s",
     handlers=[
-        logging.FileHandler(os.path.join(LOGS_DIR, "app.log"), encoding="utf-8"),
-        logging.StreamHandler()  # Para ver también los mensajes en la consola de VS Code
+        logging.FileHandler(
+            os.path.join(LOGS_DIR, "app.log"),
+            encoding="utf-8"
+        ),
+        logging.StreamHandler()
     ]
 )
 
