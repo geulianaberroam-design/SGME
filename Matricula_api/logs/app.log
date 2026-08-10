@@ -14,3 +14,5 @@
 2026-08-09 18:37:12,908 - [INFO] - El usuario salió del sistema.
 2026-08-09 18:39:59,416 - [INFO] - Se registró pago ID 1 para matrícula 1.
 2026-08-09 19:19:05,908 - [INFO] - El usuario salió del sistema.
+2026-08-09 19:19:59,477 - [WARNING] - No se encontró estudiante con DNI DNI: 78647367.
+2026-08-09 19:22:12,731 - [INFO] - Se registró documento ID 1 para el estudiante Adriana Lopez Adco.
