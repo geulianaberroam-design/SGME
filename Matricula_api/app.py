@@ -3,6 +3,9 @@ from flask import Flask, jsonify
 from dao.estudiante_dao import EstudianteDAO
 from dao.apoderado_dao import ApoderadoDAO
 from dao.matricula_dao import MatriculaDAO
+from dao.pago_dao import PagoDAO
+from dao.documento_dao import DocumentoDAO
+
 
 
 
@@ -14,6 +17,8 @@ app = Flask(__name__)
 estudianteDAO = EstudianteDAO()
 apoderadoDAO = ApoderadoDAO()
 matriculaDAO = MatriculaDAO()
+pagoDAO = PagoDAO()
+documentoDAO = DocumentoDAO()
 
 
 # ==========================================
@@ -108,6 +113,52 @@ def obtener_matriculas():
                 "grado": matricula.grado_seccion.grado,
                 "seccion": matricula.grado_seccion.seccion
             }
+        })
+
+    return jsonify(datos)
+
+# ==========================================
+# LISTAR PAGOS
+# ==========================================
+
+@app.route("/api/pagos", methods=["GET"])
+def obtener_pagos():
+
+    pagos = pagoDAO.obtener_todos()
+
+    datos = []
+
+    for pago in pagos:
+
+        datos.append({
+            "id": pago.id,
+            "fecha": str(pago.fecha),
+            "monto": float(pago.monto),
+            "comprobante": pago.comprobante
+        })
+
+    return jsonify(datos)
+
+
+# ==========================================
+# LISTAR DOCUMENTOS
+# ==========================================
+
+@app.route("/api/documentos", methods=["GET"])
+def obtener_documentos():
+
+    documentos = documentoDAO.obtener_todos()
+
+    datos = []
+
+    for documento in documentos:
+
+        datos.append({
+            "id": documento.id,
+            "nombre": documento.nombre,
+            "tipo": documento.tipo,
+            "ruta": documento.ruta,
+            "id_estudiante": documento.id_estudiante
         })
 
     return jsonify(datos)
