@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 
 from dao.estudiante_dao import EstudianteDAO
 from dao.apoderado_dao import ApoderadoDAO
@@ -6,13 +7,22 @@ from dao.matricula_dao import MatriculaDAO
 from dao.pago_dao import PagoDAO
 from dao.documento_dao import DocumentoDAO
 
+app = Flask(__name__)
+
+CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "http://localhost:5173",
+            "http://localhost:5174"
+        ]
+    }
+})
 
 
 
 # ==========================================
 # CREACIÓN DE LOS DAO
 # ==========================================
-app = Flask(__name__)
 
 estudianteDAO = EstudianteDAO()
 apoderadoDAO = ApoderadoDAO()
@@ -168,7 +178,6 @@ def obtener_documentos():
 # ==========================================
 
 if __name__ == "__main__":
-
     app.run(
         host="127.0.0.1",
         port=5000,
