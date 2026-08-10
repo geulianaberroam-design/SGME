@@ -1,243 +1,250 @@
--- ================================
--- SCRIPT: SGME
--- Base de datos: BD_MatriculaEscolar
+-- ============================================================
+-- SGME - SISTEMA DE GESTIÓN DE MATRÍCULA ESCOLAR
+-- Base de datos: MatriculaEscolar
 -- Motor: PostgreSQL
--- ================================
+-- ============================================================
+--
+-- Este script crea la estructura de la base de datos
+-- necesaria para ejecutar el proyecto SGME.
+--
+-- Tablas:
+-- 1. apoderado
+-- 2. estudiante
+-- 3. grado_seccion
+-- 4. matricula
+-- 5. pago
+-- 6. documento
+-- 7. evento
+--
+-- ============================================================
 
 
--- =================================
+-- ============================================================
 -- ELIMINAR TABLAS SI YA EXISTEN
--- =================================
--- El orden es importante por las FK.
+-- ============================================================
+--
+-- Se eliminan en este orden debido a las claves foráneas.
+-- ============================================================
 
-DROP TABLE IF EXISTS documento;
-DROP TABLE IF EXISTS pago;
-DROP TABLE IF EXISTS matricula;
-DROP TABLE IF EXISTS grado_seccion;
-DROP TABLE IF EXISTS estudiante;
-DROP TABLE IF EXISTS apoderado;
+DROP TABLE IF EXISTS pago CASCADE;
+DROP TABLE IF EXISTS documento CASCADE;
+DROP TABLE IF EXISTS matricula CASCADE;
+DROP TABLE IF EXISTS estudiante CASCADE;
+DROP TABLE IF EXISTS grado_seccion CASCADE;
+DROP TABLE IF EXISTS apoderado CASCADE;
+DROP TABLE IF EXISTS evento CASCADE;
 
 
--- =================================
--- TABLA: APODERADO
--- =================================
+-- ============================================================
+-- TABLA APODERADO
+-- ============================================================
 
 CREATE TABLE apoderado (
+
     id SERIAL PRIMARY KEY,
-    nombres VARCHAR(100) NOT NULL,
-    apellidos VARCHAR(100) NOT NULL,
+
     dni VARCHAR(8) NOT NULL UNIQUE,
-    telefono VARCHAR(15),
-    email VARCHAR(100)
+
+    nombres VARCHAR(100) NOT NULL,
+
+    apellidos VARCHAR(100) NOT NULL,
+
+    telefono VARCHAR(20),
+
+    email VARCHAR(150),
+
+    parentesco VARCHAR(50)
+
 );
 
 
--- =================================
--- TABLA: ESTUDIANTE
--- =================================
+-- ============================================================
+-- TABLA ESTUDIANTE
+-- ============================================================
 
 CREATE TABLE estudiante (
-    id SERIAL PRIMARY KEY,
-    nombres VARCHAR(100) NOT NULL,
-    apellidos VARCHAR(100) NOT NULL,
-    fecha_nac DATE NOT NULL,
-    direccion VARCHAR(200),
-    dni VARCHAR(8) NOT NULL UNIQUE,
-    id_apoderado INTEGER,
 
-    FOREIGN KEY (id_apoderado)
+    id SERIAL PRIMARY KEY,
+
+    dni VARCHAR(8) NOT NULL UNIQUE,
+
+    nombres VARCHAR(100) NOT NULL,
+
+    apellidos VARCHAR(100) NOT NULL,
+
+    telefono VARCHAR(20),
+
+    email VARCHAR(150),
+
+    fecha_nac DATE,
+
+    direccion VARCHAR(200),
+
+    id_apoderado INTEGER NOT NULL,
+
+    CONSTRAINT fk_estudiante_apoderado
+        FOREIGN KEY (id_apoderado)
         REFERENCES apoderado(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+
 );
 
 
--- =================================
--- TABLA: GRADO_SECCION
--- =================================
+-- ============================================================
+-- TABLA GRADO Y SECCIÓN
+-- ============================================================
 
 CREATE TABLE grado_seccion (
+
     id SERIAL PRIMARY KEY,
+
     grado VARCHAR(20) NOT NULL,
-    seccion CHAR(1) NOT NULL
+
+    seccion VARCHAR(10) NOT NULL,
+
+    CONSTRAINT uq_grado_seccion
+        UNIQUE (grado, seccion)
+
 );
 
 
--- =================================
--- TABLA: MATRICULA
--- =================================
+-- ============================================================
+-- TABLA MATRÍCULA
+-- ============================================================
 
 CREATE TABLE matricula (
+
     id SERIAL PRIMARY KEY,
+
     anio INTEGER NOT NULL,
-    estado VARCHAR(20) NOT NULL,
+
     fecha DATE NOT NULL,
+
+    estado VARCHAR(30) NOT NULL,
+
     id_estudiante INTEGER NOT NULL,
+
     id_grado_seccion INTEGER NOT NULL,
 
-    FOREIGN KEY (id_estudiante)
-        REFERENCES estudiante(id),
+    CONSTRAINT fk_matricula_estudiante
+        FOREIGN KEY (id_estudiante)
+        REFERENCES estudiante(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
 
-    FOREIGN KEY (id_grado_seccion)
+    CONSTRAINT fk_matricula_grado_seccion
+        FOREIGN KEY (id_grado_seccion)
         REFERENCES grado_seccion(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+
 );
 
 
--- =================================
--- TABLA: PAGO
--- =================================
+-- ============================================================
+-- TABLA PAGO
+-- ============================================================
 
 CREATE TABLE pago (
+
     id SERIAL PRIMARY KEY,
+
     fecha DATE NOT NULL,
+
     monto NUMERIC(10,2) NOT NULL,
-    comprobante VARCHAR(50),
+
+    comprobante VARCHAR(100),
+
     id_matricula INTEGER NOT NULL,
 
-    FOREIGN KEY (id_matricula)
+    CONSTRAINT fk_pago_matricula
+        FOREIGN KEY (id_matricula)
         REFERENCES matricula(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+
 );
 
 
--- =================================
--- TABLA: DOCUMENTO
--- =================================
+-- ============================================================
+-- TABLA DOCUMENTO
+-- ============================================================
 
 CREATE TABLE documento (
+
     id SERIAL PRIMARY KEY,
+
     nombre VARCHAR(150) NOT NULL,
+
     tipo VARCHAR(50) NOT NULL,
-    ruta VARCHAR(255),
+
+    ruta VARCHAR(300),
+
     id_estudiante INTEGER NOT NULL,
 
-    FOREIGN KEY (id_estudiante)
+    CONSTRAINT fk_documento_estudiante
+        FOREIGN KEY (id_estudiante)
         REFERENCES estudiante(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+
 );
 
 
--- =================================
--- DATOS DE PRUEBA
--- =================================
+-- ============================================================
+-- TABLA EVENTO
+-- ============================================================
+--
+-- Almacena eventos que serán mostrados en el calendario
+-- del Dashboard de SGME.
+-- ============================================================
+
+CREATE TABLE evento (
+
+    id SERIAL PRIMARY KEY,
+
+    titulo VARCHAR(150) NOT NULL,
+
+    descripcion TEXT,
+
+    fecha DATE NOT NULL,
+
+    tipo VARCHAR(50),
+
+    estado VARCHAR(30) DEFAULT 'Activo'
+
+);
 
 
--- APODERADO
+-- ============================================================
+-- ÍNDICES
+-- ============================================================
+--
+-- Mejoran las búsquedas realizadas mediante las relaciones.
+-- ============================================================
 
-INSERT INTO apoderado
-(nombres, apellidos, dni, telefono, email)
-VALUES
-('Jose Maria', 'Parado de Bellido', '76568945',
- '987856456', 'jose@gmail.com');
+CREATE INDEX idx_estudiante_apoderado
+ON estudiante(id_apoderado);
 
+CREATE INDEX idx_matricula_estudiante
+ON matricula(id_estudiante);
 
--- ESTUDIANTE
+CREATE INDEX idx_matricula_grado
+ON matricula(id_grado_seccion);
 
-INSERT INTO estudiante
-(nombres, apellidos, fecha_nac, direccion, dni, id_apoderado)
-VALUES
-('Juan', 'Perez Garcia', '2012-05-15',
- 'Av. Lima 123', '71234567', 1);
+CREATE INDEX idx_pago_matricula
+ON pago(id_matricula);
 
+CREATE INDEX idx_documento_estudiante
+ON documento(id_estudiante);
 
--- GRADO Y SECCION
-
-INSERT INTO grado_seccion
-(grado, seccion)
-VALUES
-('1ro Secundaria', 'A');
-
-
--- MATRICULA
-
-INSERT INTO matricula
-(anio, estado, fecha, id_estudiante, id_grado_seccion)
-VALUES
-(2026, 'ACTIVA', '2026-08-09', 1, 1);
+CREATE INDEX idx_evento_fecha
+ON evento(fecha);
 
 
--- PAGO
+-- ============================================================
+-- FIN DEL SCRIPT
+-- ============================================================
 
-INSERT INTO pago
-(fecha, monto, comprobante, id_matricula)
-VALUES
-('2026-08-09', 350.00, 'B001-000001', 1);
-
-
--- DOCUMENTO
-
-INSERT INTO documento
-(nombre, tipo, ruta, id_estudiante)
-VALUES
-('Partida de nacimiento', 'PDF',
- 'documentos/partida_nacimiento.pdf', 1);
-
-
--- =================================
--- VERIFICACIÓN
--- =================================
-
-SELECT 'apoderado' AS tabla, COUNT(*) AS registros
-FROM apoderado
-
-UNION ALL
-
-SELECT 'estudiante', COUNT(*)
-FROM estudiante
-
-UNION ALL
-
-SELECT 'grado_seccion', COUNT(*)
-FROM grado_seccion
-
-UNION ALL
-
-SELECT 'matricula', COUNT(*)
-FROM matricula
-
-UNION ALL
-
-SELECT 'pago', COUNT(*)
-FROM pago
-
-UNION ALL
-
-SELECT 'documento', COUNT(*)
-FROM documento;
-
-
--- =================================
--- CONSULTAS DE VERIFICACIÓN
--- =================================
-
-
--- VER APODERADOS
-
-SELECT *
-FROM apoderado;
-
-
--- VER ESTUDIANTES
-
-SELECT *
-FROM estudiante;
-
-
--- VER GRADOS Y SECCIONES
-
-SELECT *
-FROM grado_seccion;
-
-
--- VER MATRÍCULAS
-
-SELECT *
-FROM matricula;
-
-
--- VER PAGOS
-
-SELECT *
-FROM pago;
-
-
--- VER DOCUMENTOS
-
-SELECT *
-FROM documento;
+SELECT 'Base de datos SGME creada correctamente' AS mensaje;
