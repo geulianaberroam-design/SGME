@@ -1,0 +1,243 @@
+-- ================================
+-- SCRIPT: SGME
+-- Base de datos: BD_MatriculaEscolar
+-- Motor: PostgreSQL
+-- ================================
+
+
+-- =================================
+-- ELIMINAR TABLAS SI YA EXISTEN
+-- =================================
+-- El orden es importante por las FK.
+
+DROP TABLE IF EXISTS documento;
+DROP TABLE IF EXISTS pago;
+DROP TABLE IF EXISTS matricula;
+DROP TABLE IF EXISTS grado_seccion;
+DROP TABLE IF EXISTS estudiante;
+DROP TABLE IF EXISTS apoderado;
+
+
+-- =================================
+-- TABLA: APODERADO
+-- =================================
+
+CREATE TABLE apoderado (
+    id SERIAL PRIMARY KEY,
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    dni VARCHAR(8) NOT NULL UNIQUE,
+    telefono VARCHAR(15),
+    email VARCHAR(100)
+);
+
+
+-- =================================
+-- TABLA: ESTUDIANTE
+-- =================================
+
+CREATE TABLE estudiante (
+    id SERIAL PRIMARY KEY,
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    fecha_nac DATE NOT NULL,
+    direccion VARCHAR(200),
+    dni VARCHAR(8) NOT NULL UNIQUE,
+    id_apoderado INTEGER,
+
+    FOREIGN KEY (id_apoderado)
+        REFERENCES apoderado(id)
+);
+
+
+-- =================================
+-- TABLA: GRADO_SECCION
+-- =================================
+
+CREATE TABLE grado_seccion (
+    id SERIAL PRIMARY KEY,
+    grado VARCHAR(20) NOT NULL,
+    seccion CHAR(1) NOT NULL
+);
+
+
+-- =================================
+-- TABLA: MATRICULA
+-- =================================
+
+CREATE TABLE matricula (
+    id SERIAL PRIMARY KEY,
+    anio INTEGER NOT NULL,
+    estado VARCHAR(20) NOT NULL,
+    fecha DATE NOT NULL,
+    id_estudiante INTEGER NOT NULL,
+    id_grado_seccion INTEGER NOT NULL,
+
+    FOREIGN KEY (id_estudiante)
+        REFERENCES estudiante(id),
+
+    FOREIGN KEY (id_grado_seccion)
+        REFERENCES grado_seccion(id)
+);
+
+
+-- =================================
+-- TABLA: PAGO
+-- =================================
+
+CREATE TABLE pago (
+    id SERIAL PRIMARY KEY,
+    fecha DATE NOT NULL,
+    monto NUMERIC(10,2) NOT NULL,
+    comprobante VARCHAR(50),
+    id_matricula INTEGER NOT NULL,
+
+    FOREIGN KEY (id_matricula)
+        REFERENCES matricula(id)
+);
+
+
+-- =================================
+-- TABLA: DOCUMENTO
+-- =================================
+
+CREATE TABLE documento (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(150) NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    ruta VARCHAR(255),
+    id_estudiante INTEGER NOT NULL,
+
+    FOREIGN KEY (id_estudiante)
+        REFERENCES estudiante(id)
+);
+
+
+-- =================================
+-- DATOS DE PRUEBA
+-- =================================
+
+
+-- APODERADO
+
+INSERT INTO apoderado
+(nombres, apellidos, dni, telefono, email)
+VALUES
+('Jose Maria', 'Parado de Bellido', '76568945',
+ '987856456', 'jose@gmail.com');
+
+
+-- ESTUDIANTE
+
+INSERT INTO estudiante
+(nombres, apellidos, fecha_nac, direccion, dni, id_apoderado)
+VALUES
+('Juan', 'Perez Garcia', '2012-05-15',
+ 'Av. Lima 123', '71234567', 1);
+
+
+-- GRADO Y SECCION
+
+INSERT INTO grado_seccion
+(grado, seccion)
+VALUES
+('1ro Secundaria', 'A');
+
+
+-- MATRICULA
+
+INSERT INTO matricula
+(anio, estado, fecha, id_estudiante, id_grado_seccion)
+VALUES
+(2026, 'ACTIVA', '2026-08-09', 1, 1);
+
+
+-- PAGO
+
+INSERT INTO pago
+(fecha, monto, comprobante, id_matricula)
+VALUES
+('2026-08-09', 350.00, 'B001-000001', 1);
+
+
+-- DOCUMENTO
+
+INSERT INTO documento
+(nombre, tipo, ruta, id_estudiante)
+VALUES
+('Partida de nacimiento', 'PDF',
+ 'documentos/partida_nacimiento.pdf', 1);
+
+
+-- =================================
+-- VERIFICACIÓN
+-- =================================
+
+SELECT 'apoderado' AS tabla, COUNT(*) AS registros
+FROM apoderado
+
+UNION ALL
+
+SELECT 'estudiante', COUNT(*)
+FROM estudiante
+
+UNION ALL
+
+SELECT 'grado_seccion', COUNT(*)
+FROM grado_seccion
+
+UNION ALL
+
+SELECT 'matricula', COUNT(*)
+FROM matricula
+
+UNION ALL
+
+SELECT 'pago', COUNT(*)
+FROM pago
+
+UNION ALL
+
+SELECT 'documento', COUNT(*)
+FROM documento;
+
+
+-- =================================
+-- CONSULTAS DE VERIFICACIÓN
+-- =================================
+
+
+-- VER APODERADOS
+
+SELECT *
+FROM apoderado;
+
+
+-- VER ESTUDIANTES
+
+SELECT *
+FROM estudiante;
+
+
+-- VER GRADOS Y SECCIONES
+
+SELECT *
+FROM grado_seccion;
+
+
+-- VER MATRÍCULAS
+
+SELECT *
+FROM matricula;
+
+
+-- VER PAGOS
+
+SELECT *
+FROM pago;
+
+
+-- VER DOCUMENTOS
+
+SELECT *
+FROM documento;

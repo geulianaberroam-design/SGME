@@ -9,6 +9,8 @@ import Estudiantes from "./pages/Estudiantes";
 import Apoderados from "./pages/Apoderados";
 import Matriculas from "./pages/Matriculas";
 import Grados from "./pages/Grados";
+import Pagos from "./pages/Pagos";
+import Documentos from "./pages/Documentos";
 
 function App() {
   const [collapsed, setCollapsed] = useState(false);
@@ -27,10 +29,8 @@ function App() {
             <Route path="/apoderados" element={<Apoderados />} />
             <Route path="/matriculas" element={<Matriculas />} />
             <Route path="/grados" element={<Grados />} />
-
-            {/* Vistas pendientes (puedes completarlas después) */}
-            <Route path="/pagos" element={<div className="p-4"><h1>Gestión de Pagos</h1></div>} />
-            <Route path="/documentos" element={<div className="p-4"><h1>Documentos</h1></div>} />
+            <Route path="/pagos" element={<Pagos />} />
+            <Route path="/documentos" element={<Documentos />} />
           </Routes>
         </div>
       </div>
