@@ -3,17 +3,15 @@
 # Sistema de Gestión de Matrícula Escolar
 # ============================================================
 #
-# Este archivo contiene el servidor Backend desarrollado
-# utilizando Python y Flask.
+# Conexión principal:
 #
-# Su función principal es conectar:
+# REACT → FLASK → DAO → POSTGRESQL
 #
-#       REACT → FLASK → DAO → POSTGRESQL
-#
-# Módulos gestionados:
+# Módulos:
 # - Estudiantes
 # - Apoderados
 # - Matrículas
+# - Grados y Secciones
 # - Pagos
 # - Documentos
 # - Eventos
@@ -22,7 +20,7 @@
 
 
 # ============================================================
-# IMPORTACIÓN DE FLASK
+# IMPORTACIONES FLASK
 # ============================================================
 
 from flask import Flask, jsonify, request
@@ -35,22 +33,25 @@ from flask_cors import CORS
 
 from modelos.estudiante import Estudiante
 from modelos.apoderado import Apoderado
+from modelos.matricula import Matricula
+from modelos.grado_seccion import GradoSeccion
 
 
 # ============================================================
-# IMPORTACIÓN DE LOS DAO
+# IMPORTACIÓN DE DAO
 # ============================================================
 
 from dao.estudiante_dao import EstudianteDAO
 from dao.apoderado_dao import ApoderadoDAO
 from dao.matricula_dao import MatriculaDAO
+from dao.grado_seccion_dao import GradoSeccionDAO
 from dao.pago_dao import PagoDAO
 from dao.documento_dao import DocumentoDAO
 from dao.evento_dao import EventoDAO
 
 
 # ============================================================
-# CREACIÓN DE LA APLICACIÓN FLASK
+# CREACIÓN DE FLASK
 # ============================================================
 
 app = Flask(__name__)
@@ -58,17 +59,6 @@ app = Flask(__name__)
 
 # ============================================================
 # CONFIGURACIÓN CORS
-# ============================================================
-#
-# Permite que React pueda comunicarse con Flask.
-#
-# React:
-# http://localhost:5173
-# http://localhost:5174
-#
-# Flask:
-# http://127.0.0.1:5000
-#
 # ============================================================
 
 CORS(app, resources={
@@ -82,19 +72,20 @@ CORS(app, resources={
 
 
 # ============================================================
-# CREACIÓN DE LOS DAO
+# CREACIÓN DE DAO
 # ============================================================
 
 estudianteDAO = EstudianteDAO()
 apoderadoDAO = ApoderadoDAO()
 matriculaDAO = MatriculaDAO()
+gradoSeccionDAO = GradoSeccionDAO()
 pagoDAO = PagoDAO()
 documentoDAO = DocumentoDAO()
 eventoDAO = EventoDAO()
 
 
 # ============================================================
-# RUTA DE INICIO
+# INICIO API
 # ============================================================
 
 @app.route("/")
@@ -106,15 +97,13 @@ def inicio():
 
 
 # ============================================================
-# LISTAR ESTUDIANTES
+# ESTUDIANTES
 # ============================================================
-#
-# Método:
-# GET
-#
-# URL:
-# /api/estudiantes
-#
+
+
+# ============================================================
+# LISTAR ESTUDIANTES
+# GET /api/estudiantes
 # ============================================================
 
 @app.route("/api/estudiantes", methods=["GET"])
@@ -143,14 +132,7 @@ def obtener_estudiantes():
 
 # ============================================================
 # REGISTRAR ESTUDIANTE
-# ============================================================
-#
-# Método:
-# POST
-#
-# URL:
-# /api/estudiantes
-#
+# POST /api/estudiantes
 # ============================================================
 
 @app.route("/api/estudiantes", methods=["POST"])
@@ -160,7 +142,12 @@ def registrar_estudiante():
 
         datos = request.get_json()
 
-        print("Datos recibidos:", datos)
+        if not datos:
+
+            return jsonify({
+                "mensaje": "No se recibieron datos"
+            }), 400
+
 
         estudiante = Estudiante(
             dni=datos.get("dni"),
@@ -173,7 +160,11 @@ def registrar_estudiante():
             id_apoderado=datos.get("id_apoderado")
         )
 
-        estudiante_guardado = estudianteDAO.insertar(estudiante)
+
+        estudiante_guardado = estudianteDAO.insertar(
+            estudiante
+        )
+
 
         if estudiante_guardado is None:
 
@@ -181,14 +172,19 @@ def registrar_estudiante():
                 "mensaje": "No se pudo registrar el estudiante"
             }), 400
 
+
         return jsonify({
             "mensaje": "Estudiante registrado correctamente",
             "id": estudiante_guardado.id
         }), 201
 
+
     except Exception as e:
 
-        print("Error al registrar estudiante:", e)
+        print(
+            "Error al registrar estudiante:",
+            e
+        )
 
         return jsonify({
             "mensaje": "Error al registrar estudiante",
@@ -197,15 +193,13 @@ def registrar_estudiante():
 
 
 # ============================================================
-# LISTAR APODERADOS
+# APODERADOS
 # ============================================================
-#
-# Método:
-# GET
-#
-# URL:
-# /api/apoderados
-#
+
+
+# ============================================================
+# LISTAR APODERADOS
+# GET /api/apoderados
 # ============================================================
 
 @app.route("/api/apoderados", methods=["GET"])
@@ -232,18 +226,7 @@ def obtener_apoderados():
 
 # ============================================================
 # REGISTRAR APODERADO
-# ============================================================
-#
-# Método:
-# POST
-#
-# URL:
-# /api/apoderados
-#
-# Recibe los datos enviados desde React.
-# Convierte el JSON en un objeto Apoderado.
-# Luego utiliza ApoderadoDAO para guardar en PostgreSQL.
-#
+# POST /api/apoderados
 # ============================================================
 
 @app.route("/api/apoderados", methods=["POST"])
@@ -251,49 +234,25 @@ def registrar_apoderado():
 
     try:
 
-        # Recibir JSON desde React
         datos = request.get_json()
-
-        print("Datos del apoderado recibidos:", datos)
 
         if not datos:
 
             return jsonify({
-                "mensaje": "No se recibieron datos del apoderado"
+                "mensaje": "No se recibieron datos"
             }), 400
 
 
-        # Validar campos obligatorios
-        if not datos.get("dni"):
-
-            return jsonify({
-                "mensaje": "El DNI es obligatorio"
-            }), 400
+        apoderado = Apoderado.from_dict(
+            datos
+        )
 
 
-        if not datos.get("nombres"):
-
-            return jsonify({
-                "mensaje": "Los nombres son obligatorios"
-            }), 400
+        apoderado_guardado = apoderadoDAO.insertar(
+            apoderado
+        )
 
 
-        if not datos.get("apellidos"):
-
-            return jsonify({
-                "mensaje": "Los apellidos son obligatorios"
-            }), 400
-
-
-        # Convertir diccionario JSON a objeto Apoderado
-        apoderado = Apoderado.from_dict(datos)
-
-
-        # Guardar mediante DAO
-        apoderado_guardado = apoderadoDAO.insertar(apoderado)
-
-
-        # Verificar resultado
         if apoderado_guardado is None:
 
             return jsonify({
@@ -301,7 +260,6 @@ def registrar_apoderado():
             }), 400
 
 
-        # Respuesta exitosa
         return jsonify({
             "mensaje": "Apoderado registrado correctamente",
             "apoderado": apoderado_guardado.to_dict()
@@ -310,26 +268,26 @@ def registrar_apoderado():
 
     except Exception as e:
 
-        print("Error al registrar apoderado:", e)
+        print(
+            "Error al registrar apoderado:",
+            e
+        )
 
         return jsonify({
             "mensaje": "Error al registrar apoderado",
             "error": str(e)
         }), 500
 
-    # ============================================================
-# ACTUALIZAR APODERADO
+
 # ============================================================
-#
-# Método:
-# PUT
-#
-# URL:
-# /api/apoderados/<id>
-#
+# ACTUALIZAR APODERADO
+# PUT /api/apoderados/<id>
 # ============================================================
 
-@app.route("/api/apoderados/<int:id_apoderado>", methods=["PUT"])
+@app.route(
+    "/api/apoderados/<int:id_apoderado>",
+    methods=["PUT"]
+)
 def actualizar_apoderado(id_apoderado):
 
     try:
@@ -337,9 +295,11 @@ def actualizar_apoderado(id_apoderado):
         datos = request.get_json()
 
         if not datos:
+
             return jsonify({
                 "mensaje": "No se recibieron datos"
             }), 400
+
 
         datos_nuevos = {
             "nombres": datos.get("nombres", ""),
@@ -349,23 +309,31 @@ def actualizar_apoderado(id_apoderado):
             "parentesco": datos.get("parentesco", "")
         }
 
+
         actualizado = apoderadoDAO.actualizar_completo(
             id_apoderado,
             datos_nuevos
         )
 
+
         if not actualizado:
+
             return jsonify({
                 "mensaje": "No se encontró el apoderado"
             }), 404
+
 
         return jsonify({
             "mensaje": "Apoderado actualizado correctamente"
         }), 200
 
+
     except Exception as e:
 
-        print("Error al actualizar apoderado:", e)
+        print(
+            "Error al actualizar apoderado:",
+            e
+        )
 
         return jsonify({
             "mensaje": "Error al actualizar apoderado",
@@ -375,35 +343,40 @@ def actualizar_apoderado(id_apoderado):
 
 # ============================================================
 # ELIMINAR APODERADO
-# ============================================================
-#
-# Método:
-# DELETE
-#
-# URL:
-# /api/apoderados/<id>
-#
+# DELETE /api/apoderados/<id>
 # ============================================================
 
-@app.route("/api/apoderados/<int:id_apoderado>", methods=["DELETE"])
+@app.route(
+    "/api/apoderados/<int:id_apoderado>",
+    methods=["DELETE"]
+)
 def eliminar_apoderado(id_apoderado):
 
     try:
 
-        eliminado = apoderadoDAO.eliminar(id_apoderado)
+        eliminado = apoderadoDAO.eliminar(
+            id_apoderado
+        )
+
 
         if not eliminado:
+
             return jsonify({
-                "mensaje": "No se encontró el apoderado"
-            }), 404
+                "mensaje": "No se pudo eliminar el apoderado"
+            }), 400
+
 
         return jsonify({
             "mensaje": "Apoderado eliminado correctamente"
         }), 200
 
+
     except Exception as e:
 
-        print("Error al eliminar apoderado:", e)
+        print(
+            "Error al eliminar apoderado:",
+            e
+        )
 
         return jsonify({
             "mensaje": "Error al eliminar apoderado",
@@ -412,15 +385,41 @@ def eliminar_apoderado(id_apoderado):
 
 
 # ============================================================
-# LISTAR MATRÍCULAS
+# GRADOS Y SECCIONES
 # ============================================================
-#
-# Método:
-# GET
-#
-# URL:
-# /api/matriculas
-#
+
+
+# ============================================================
+# LISTAR GRADOS Y SECCIONES
+# GET /api/grados
+# ============================================================
+
+@app.route("/api/grados", methods=["GET"])
+def obtener_grados():
+
+    grados = gradoSeccionDAO.obtener_todos()
+
+    datos = []
+
+    for grado in grados:
+
+        datos.append({
+            "id": grado.id,
+            "grado": grado.grado,
+            "seccion": grado.seccion
+        })
+
+    return jsonify(datos)
+
+
+# ============================================================
+# MATRÍCULAS
+# ============================================================
+
+
+# ============================================================
+# LISTAR MATRÍCULAS
+# GET /api/matriculas
 # ============================================================
 
 @app.route("/api/matriculas", methods=["GET"])
@@ -443,13 +442,16 @@ def obtener_matriculas():
                 "dni": matricula.estudiante.dni,
                 "nombres": matricula.estudiante.nombres,
                 "apellidos": matricula.estudiante.apellidos,
-                "id_apoderado": matricula.estudiante.id_apoderado
+                "id_apoderado":
+                    matricula.estudiante.id_apoderado
             },
 
             "grado_seccion": {
                 "id": matricula.grado_seccion.id,
-                "grado": matricula.grado_seccion.grado,
-                "seccion": matricula.grado_seccion.seccion
+                "grado":
+                    matricula.grado_seccion.grado,
+                "seccion":
+                    matricula.grado_seccion.seccion
             }
         })
 
@@ -457,15 +459,254 @@ def obtener_matriculas():
 
 
 # ============================================================
-# LISTAR PAGOS
+# REGISTRAR MATRÍCULA
+# POST /api/matriculas
 # ============================================================
+
+@app.route("/api/matriculas", methods=["POST"])
+def registrar_matricula():
+
+    try:
+
+        datos = request.get_json()
+
+        if not datos:
+
+            return jsonify({
+                "mensaje": "No se recibieron datos"
+            }), 400
+
+
+        id_estudiante = datos.get(
+            "id_estudiante"
+        )
+
+        id_grado_seccion = datos.get(
+            "id_grado_seccion"
+        )
+
+
+        if not id_estudiante:
+
+            return jsonify({
+                "mensaje": "Debe seleccionar un estudiante"
+            }), 400
+
+
+        if not id_grado_seccion:
+
+            return jsonify({
+                "mensaje": "Debe seleccionar grado y sección"
+            }), 400
+
+
+        # Crear referencia al estudiante
+
+        estudiante = Estudiante()
+
+        estudiante.id = int(
+            id_estudiante
+        )
+
+
+        # Crear referencia a grado/sección
+
+        grado_seccion = GradoSeccion()
+
+        grado_seccion.id = int(
+            id_grado_seccion
+        )
+
+
+        # Crear objeto Matrícula
+
+        matricula = Matricula(
+            anio=datos.get("anio"),
+            fecha=datos.get("fecha"),
+            estado=datos.get("estado"),
+            estudiante=estudiante,
+            grado_seccion=grado_seccion
+        )
+
+
+        # Guardar mediante DAO
+
+        matricula_guardada = matriculaDAO.insertar(
+            matricula
+        )
+
+
+        if matricula_guardada is None:
+
+            return jsonify({
+                "mensaje":
+                    "No se pudo registrar la matrícula"
+            }), 400
+
+
+        return jsonify({
+            "mensaje":
+                "Matrícula registrada correctamente",
+
+            "id":
+                matricula_guardada.id
+
+        }), 201
+
+
+    except Exception as e:
+
+        print(
+            "Error al registrar matrícula:",
+            e
+        )
+
+        return jsonify({
+            "mensaje":
+                "Error al registrar matrícula",
+
+            "error":
+                str(e)
+
+        }), 500
+
+
+# ============================================================
+# ACTUALIZAR MATRÍCULA
+# PUT /api/matriculas/<id>
 #
-# Método:
-# GET
-#
-# URL:
-# /api/pagos
-#
+# Por ahora modifica solamente el estado.
+# ============================================================
+
+@app.route(
+    "/api/matriculas/<int:id_matricula>",
+    methods=["PUT"]
+)
+def actualizar_matricula(
+    id_matricula
+):
+
+    try:
+
+        datos = request.get_json()
+
+        if not datos:
+
+            return jsonify({
+                "mensaje":
+                    "No se recibieron datos"
+            }), 400
+
+
+        estado = datos.get(
+            "estado"
+        )
+
+
+        if not estado:
+
+            return jsonify({
+                "mensaje":
+                    "El estado es obligatorio"
+            }), 400
+
+
+        actualizado = matriculaDAO.actualizar(
+            id_matricula,
+            estado
+        )
+
+
+        if not actualizado:
+
+            return jsonify({
+                "mensaje":
+                    "No se encontró la matrícula"
+            }), 404
+
+
+        return jsonify({
+            "mensaje":
+                "Matrícula actualizada correctamente"
+        }), 200
+
+
+    except Exception as e:
+
+        print(
+            "Error al actualizar matrícula:",
+            e
+        )
+
+        return jsonify({
+            "mensaje":
+                "Error al actualizar matrícula",
+
+            "error":
+                str(e)
+
+        }), 500
+
+
+# ============================================================
+# ELIMINAR MATRÍCULA
+# DELETE /api/matriculas/<id>
+# ============================================================
+
+@app.route(
+    "/api/matriculas/<int:id_matricula>",
+    methods=["DELETE"]
+)
+def eliminar_matricula(
+    id_matricula
+):
+
+    try:
+
+        eliminado = matriculaDAO.eliminar(
+            id_matricula
+        )
+
+
+        if not eliminado:
+
+            return jsonify({
+                "mensaje":
+                    "No se pudo eliminar la matrícula"
+            }), 400
+
+
+        return jsonify({
+            "mensaje":
+                "Matrícula eliminada correctamente"
+        }), 200
+
+
+    except Exception as e:
+
+        print(
+            "Error al eliminar matrícula:",
+            e
+        )
+
+        return jsonify({
+            "mensaje":
+                "Error al eliminar matrícula",
+
+            "error":
+                str(e)
+
+        }), 500
+
+
+# ============================================================
+# PAGOS
+# ============================================================
+
+
+# ============================================================
+# LISTAR PAGOS
+# GET /api/pagos
 # ============================================================
 
 @app.route("/api/pagos", methods=["GET"])
@@ -488,15 +729,13 @@ def obtener_pagos():
 
 
 # ============================================================
-# LISTAR DOCUMENTOS
+# DOCUMENTOS
 # ============================================================
-#
-# Método:
-# GET
-#
-# URL:
-# /api/documentos
-#
+
+
+# ============================================================
+# LISTAR DOCUMENTOS
+# GET /api/documentos
 # ============================================================
 
 @app.route("/api/documentos", methods=["GET"])
@@ -513,22 +752,21 @@ def obtener_documentos():
             "nombre": documento.nombre,
             "tipo": documento.tipo,
             "ruta": documento.ruta,
-            "id_estudiante": documento.id_estudiante
+            "id_estudiante":
+                documento.id_estudiante
         })
 
     return jsonify(datos)
 
 
 # ============================================================
-# LISTAR EVENTOS
+# EVENTOS
 # ============================================================
-#
-# Método:
-# GET
-#
-# URL:
-# /api/eventos
-#
+
+
+# ============================================================
+# LISTAR EVENTOS
+# GET /api/eventos
 # ============================================================
 
 @app.route("/api/eventos", methods=["GET"])
@@ -556,8 +794,7 @@ def obtener_eventos():
 # EJECUTAR API
 # ============================================================
 #
-# IMPORTANTE:
-# Esta sección siempre debe estar al FINAL.
+# Esta sección SIEMPRE debe quedar al final.
 #
 # ============================================================
 
