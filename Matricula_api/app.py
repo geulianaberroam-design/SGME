@@ -34,6 +34,7 @@ from flask_cors import CORS
 # ============================================================
 
 from modelos.estudiante import Estudiante
+from modelos.apoderado import Apoderado
 
 
 # ============================================================
@@ -83,12 +84,6 @@ CORS(app, resources={
 # ============================================================
 # CREACIÓN DE LOS DAO
 # ============================================================
-#
-# Los DAO realizan las operaciones sobre PostgreSQL.
-#
-# Flask → DAO → PostgreSQL
-#
-# ============================================================
 
 estudianteDAO = EstudianteDAO()
 apoderadoDAO = ApoderadoDAO()
@@ -100,16 +95,6 @@ eventoDAO = EventoDAO()
 
 # ============================================================
 # RUTA DE INICIO
-# ============================================================
-#
-# Método:
-# GET
-#
-# URL:
-# http://127.0.0.1:5000/
-#
-# Permite comprobar que la API está funcionando.
-#
 # ============================================================
 
 @app.route("/")
@@ -129,8 +114,6 @@ def inicio():
 #
 # URL:
 # /api/estudiantes
-#
-# Obtiene los estudiantes registrados en PostgreSQL.
 #
 # ============================================================
 
@@ -168,9 +151,6 @@ def obtener_estudiantes():
 # URL:
 # /api/estudiantes
 #
-# Recibe desde React los datos de un estudiante y utiliza
-# EstudianteDAO para guardarlo en PostgreSQL.
-#
 # ============================================================
 
 @app.route("/api/estudiantes", methods=["POST"])
@@ -178,12 +158,10 @@ def registrar_estudiante():
 
     try:
 
-        # Recibir los datos enviados por React
         datos = request.get_json()
 
         print("Datos recibidos:", datos)
 
-        # Crear objeto Estudiante
         estudiante = Estudiante(
             dni=datos.get("dni"),
             nombres=datos.get("nombres"),
@@ -195,17 +173,14 @@ def registrar_estudiante():
             id_apoderado=datos.get("id_apoderado")
         )
 
-        # Guardar estudiante en PostgreSQL
         estudiante_guardado = estudianteDAO.insertar(estudiante)
 
-        # Verificar si se pudo registrar
         if estudiante_guardado is None:
 
             return jsonify({
                 "mensaje": "No se pudo registrar el estudiante"
             }), 400
 
-        # Respuesta exitosa
         return jsonify({
             "mensaje": "Estudiante registrado correctamente",
             "id": estudiante_guardado.id
@@ -231,8 +206,6 @@ def registrar_estudiante():
 # URL:
 # /api/apoderados
 #
-# Obtiene los apoderados registrados en PostgreSQL.
-#
 # ============================================================
 
 @app.route("/api/apoderados", methods=["GET"])
@@ -250,10 +223,192 @@ def obtener_apoderados():
             "nombres": apoderado.nombres,
             "apellidos": apoderado.apellidos,
             "telefono": apoderado.telefono,
-            "email": apoderado.email
+            "email": apoderado.email,
+            "parentesco": apoderado.parentesco
         })
 
     return jsonify(datos)
+
+
+# ============================================================
+# REGISTRAR APODERADO
+# ============================================================
+#
+# Método:
+# POST
+#
+# URL:
+# /api/apoderados
+#
+# Recibe los datos enviados desde React.
+# Convierte el JSON en un objeto Apoderado.
+# Luego utiliza ApoderadoDAO para guardar en PostgreSQL.
+#
+# ============================================================
+
+@app.route("/api/apoderados", methods=["POST"])
+def registrar_apoderado():
+
+    try:
+
+        # Recibir JSON desde React
+        datos = request.get_json()
+
+        print("Datos del apoderado recibidos:", datos)
+
+        if not datos:
+
+            return jsonify({
+                "mensaje": "No se recibieron datos del apoderado"
+            }), 400
+
+
+        # Validar campos obligatorios
+        if not datos.get("dni"):
+
+            return jsonify({
+                "mensaje": "El DNI es obligatorio"
+            }), 400
+
+
+        if not datos.get("nombres"):
+
+            return jsonify({
+                "mensaje": "Los nombres son obligatorios"
+            }), 400
+
+
+        if not datos.get("apellidos"):
+
+            return jsonify({
+                "mensaje": "Los apellidos son obligatorios"
+            }), 400
+
+
+        # Convertir diccionario JSON a objeto Apoderado
+        apoderado = Apoderado.from_dict(datos)
+
+
+        # Guardar mediante DAO
+        apoderado_guardado = apoderadoDAO.insertar(apoderado)
+
+
+        # Verificar resultado
+        if apoderado_guardado is None:
+
+            return jsonify({
+                "mensaje": "No se pudo registrar el apoderado"
+            }), 400
+
+
+        # Respuesta exitosa
+        return jsonify({
+            "mensaje": "Apoderado registrado correctamente",
+            "apoderado": apoderado_guardado.to_dict()
+        }), 201
+
+
+    except Exception as e:
+
+        print("Error al registrar apoderado:", e)
+
+        return jsonify({
+            "mensaje": "Error al registrar apoderado",
+            "error": str(e)
+        }), 500
+
+    # ============================================================
+# ACTUALIZAR APODERADO
+# ============================================================
+#
+# Método:
+# PUT
+#
+# URL:
+# /api/apoderados/<id>
+#
+# ============================================================
+
+@app.route("/api/apoderados/<int:id_apoderado>", methods=["PUT"])
+def actualizar_apoderado(id_apoderado):
+
+    try:
+
+        datos = request.get_json()
+
+        if not datos:
+            return jsonify({
+                "mensaje": "No se recibieron datos"
+            }), 400
+
+        datos_nuevos = {
+            "nombres": datos.get("nombres", ""),
+            "apellidos": datos.get("apellidos", ""),
+            "telefono": datos.get("telefono", ""),
+            "email": datos.get("email", ""),
+            "parentesco": datos.get("parentesco", "")
+        }
+
+        actualizado = apoderadoDAO.actualizar_completo(
+            id_apoderado,
+            datos_nuevos
+        )
+
+        if not actualizado:
+            return jsonify({
+                "mensaje": "No se encontró el apoderado"
+            }), 404
+
+        return jsonify({
+            "mensaje": "Apoderado actualizado correctamente"
+        }), 200
+
+    except Exception as e:
+
+        print("Error al actualizar apoderado:", e)
+
+        return jsonify({
+            "mensaje": "Error al actualizar apoderado",
+            "error": str(e)
+        }), 500
+
+
+# ============================================================
+# ELIMINAR APODERADO
+# ============================================================
+#
+# Método:
+# DELETE
+#
+# URL:
+# /api/apoderados/<id>
+#
+# ============================================================
+
+@app.route("/api/apoderados/<int:id_apoderado>", methods=["DELETE"])
+def eliminar_apoderado(id_apoderado):
+
+    try:
+
+        eliminado = apoderadoDAO.eliminar(id_apoderado)
+
+        if not eliminado:
+            return jsonify({
+                "mensaje": "No se encontró el apoderado"
+            }), 404
+
+        return jsonify({
+            "mensaje": "Apoderado eliminado correctamente"
+        }), 200
+
+    except Exception as e:
+
+        print("Error al eliminar apoderado:", e)
+
+        return jsonify({
+            "mensaje": "Error al eliminar apoderado",
+            "error": str(e)
+        }), 500
 
 
 # ============================================================
@@ -265,11 +420,6 @@ def obtener_apoderados():
 #
 # URL:
 # /api/matriculas
-#
-# Obtiene las matrículas registradas en PostgreSQL.
-#
-# También envía la información del estudiante,
-# apoderado, grado y sección.
 #
 # ============================================================
 
@@ -316,8 +466,6 @@ def obtener_matriculas():
 # URL:
 # /api/pagos
 #
-# Obtiene los pagos registrados en PostgreSQL.
-#
 # ============================================================
 
 @app.route("/api/pagos", methods=["GET"])
@@ -348,8 +496,6 @@ def obtener_pagos():
 #
 # URL:
 # /api/documentos
-#
-# Obtiene los documentos registrados en PostgreSQL.
 #
 # ============================================================
 
@@ -383,9 +529,6 @@ def obtener_documentos():
 # URL:
 # /api/eventos
 #
-# Obtiene los eventos del calendario registrados
-# en PostgreSQL.
-#
 # ============================================================
 
 @app.route("/api/eventos", methods=["GET"])
@@ -414,11 +557,7 @@ def obtener_eventos():
 # ============================================================
 #
 # IMPORTANTE:
-# Esta sección siempre debe estar al FINAL del archivo,
-# después de todas las rutas.
-#
-# Servidor:
-# http://127.0.0.1:5000
+# Esta sección siempre debe estar al FINAL.
 #
 # ============================================================
 
