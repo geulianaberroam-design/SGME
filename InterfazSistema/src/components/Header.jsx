@@ -30,8 +30,14 @@ function Header({ collapsed, setCollapsed }) {
 
 
   return (
-    <header className="d-flex justify-content-between align-items-center w-100">
-
+    <header
+  className="d-flex justify-content-between align-items-center w-100 bg-white"
+  style={{
+    padding: "18px 24px",
+    borderBottom: "1px solid #e5e7eb",
+    minHeight: "86px"
+  }}
+>
       {/* ======================================================
           1. SECCIÓN IZQUIERDA
           Botón hamburguesa + información del sistema
