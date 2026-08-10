@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
+import api from "../services/api";
 
 export default function Apoderados() {
   const [busquedaDni, setBusquedaDni] = useState('');
@@ -22,18 +23,59 @@ export default function Apoderados() {
     { id: "Tutor(a)", label: "Tutor(a)", iconClass: "bi bi-person-fill" },
     { id: "Otro", label: "Otro", iconClass: "bi bi-person-fill" }
   ];
+  // ============================================================
+// LISTA DE APODERADOS DESDE POSTGRESQL
+// ============================================================
 
-  // Lista de apoderados para la tabla basada en las imágenes
-  const [apoderados] = useState([
-    { id: "APO-001", dni: "43218765", init: "RE", nombres: "Rosa Elvira", apellidos: "Torres Mamani", telefono: "987 654 321", correo: "rosa.torres@mail.com", parentesco: "Madre", parentescoBg: "#ffe4e6", parentescoColor: "#be123c", icon: "👩", estado: "Activo" },
-    { id: "APO-002", dni: "29876543", init: "JC", nombres: "Juan Carlos", apellidos: "Mamani Quispe", telefono: "945 678 123", correo: "juan.mamani@mail.com", parentesco: "Padre", parentescoBg: "#eff6ff", parentescoColor: "#1d4ed8", icon: "👨", estado: "Activo" },
-    { id: "APO-003", dni: "31234578", init: "AP", nombres: "Ana Patricia", apellidos: "Díaz Reyes", telefono: "932 145 678", correo: "ana.diaz@mail.com", parentesco: "Madre", parentescoBg: "#ffe4e6", parentescoColor: "#be123c", icon: "👩", estado: "Activo" },
-    { id: "APO-004", dni: "50987654", init: "CA", nombres: "Carlos Alberto", apellidos: "Salinas Vera", telefono: "912 345 678", correo: "carlos.sv@mail.com", parentesco: "Padre", parentescoBg: "#eff6ff", parentescoColor: "#1d4ed8", icon: "👨", estado: "Activo" },
-    { id: "APO-005", dni: "68765432", init: "ML", nombres: "Marta Lucia", apellidos: "Huanca Flores", telefono: "968 432 157", correo: "marta.hf@mail.com", parentesco: "Madre", parentescoBg: "#ffe4e6", parentescoColor: "#be123c", icon: "👩", estado: "Activo" },
-    { id: "APO-006", dni: "72345891", init: "PA", nombres: "Pedro Augusto", apellidos: "Ochoa Ramos", telefono: "956 321 874", correo: "pedro.or@mail.com", parentesco: "Padre", parentescoBg: "#eff6ff", parentescoColor: "#1d4ed8", icon: "👨", estado: "Activo" },
-    { id: "APO-007", dni: "85432109", init: "EB", nombres: "Elena Beatriz", apellidos: "Loza Paredes", telefono: "943 876 512", correo: "elena.lp@mail.com", parentesco: "Tutor(a)", parentescoBg: "#e0f2fe", parentescoColor: "#0369a1", iconClass: "bi bi-person-fill", estado: "Activo" },
-    { id: "APO-008", dni: "62341987", init: "RQ", nombres: "Roberto", apellidos: "Quispe Aranda", telefono: "921 543 876", correo: "roberto.qa@mail.com", parentesco: "Abuelo(a)", parentescoBg: "#fef3c7", parentescoColor: "#b45309", icon: "👴", estado: "Inactivo" },
-  ]);
+const [apoderados, setApoderados] = useState([]);
+
+
+// ============================================================
+// CARGAR APODERADOS
+// ============================================================
+
+const cargarApoderados = async () => {
+  try {
+
+    const respuesta = await api.get("/apoderados");
+
+    console.log("Apoderados recibidos:", respuesta.data);
+
+    const lista = respuesta.data.map((a) => ({
+      ...a,
+
+      // Iniciales para el avatar
+      init:
+        `${a.nombres?.charAt(0) || ""}${a.apellidos?.charAt(0) || ""}`
+          .toUpperCase(),
+
+      // PostgreSQL usa email, la interfaz usa correo
+      correo: a.email || "",
+
+      // Valores temporales mientras estos campos
+      // no existan en PostgreSQL
+      parentesco: a.parentesco || "Otro",
+      estado: a.estado || "Activo"
+    }));
+
+    setApoderados(lista);
+
+  } catch (error) {
+
+    console.error(
+      "Error al cargar apoderados:",
+      error
+    );
+
+  }
+};
+
+
+useEffect(() => {
+  cargarApoderados();
+}, []);
+
+ 
 
   const handleChange = (e) => {
     setFormData({
