@@ -2,68 +2,37 @@ import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
+import Header from "./components/Header";
 import Dashboard from "./pages/Dashboard";
+import Estudiantes from "./pages/Estudiantes"; // 1. IMPORTA EL COMPONENTE AQUÍ
 
 function App() {
-
   const [collapsed, setCollapsed] = useState(false);
 
   return (
     <BrowserRouter>
-
-      <div className="app">
-
+      <div className="app-container">
         <Sidebar collapsed={collapsed} />
 
-        <Routes>
+        <div className="content">
+          <Header collapsed={collapsed} setCollapsed={setCollapsed} />
 
-          <Route
-            path="/"
-            element={
-              <Dashboard
-                collapsed={collapsed}
-                setCollapsed={setCollapsed}
-              />
-            }
-          />
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            
+            {/* 2. REEMPLAZA EL H1 POR EL COMPONENTE <Estudiantes /> */}
+            <Route path="/estudiantes" element={<Estudiantes />} />
 
-          <Route
-            path="/estudiantes"
-            element={<h1>Estudiantes</h1>}
-          />
-
-          <Route
-            path="/apoderados"
-            element={<h1>Apoderados</h1>}
-          />
-
-          <Route
-            path="/matriculas"
-            element={<h1>Matrículas</h1>}
-          />
-
-          <Route
-            path="/grados"
-            element={<h1>Grados</h1>}
-          />
-
-          <Route
-            path="/pagos"
-            element={<h1>Pagos</h1>}
-          />
-
-          <Route
-            path="/documentos"
-            element={<h1>Documentos</h1>}
-          />
-
-        </Routes>
-
+            <Route path="/apoderados" element={<div className="p-4"><h1>Gestión de Apoderados</h1></div>} />
+            <Route path="/matriculas" element={<div className="p-4"><h1>Gestión de Matrículas</h1></div>} />
+            <Route path="/grados" element={<div className="p-4"><h1>Grados y Secciones</h1></div>} />
+            <Route path="/pagos" element={<div className="p-4"><h1>Gestión de Pagos</h1></div>} />
+            <Route path="/documentos" element={<div className="p-4"><h1>Documentos</h1></div>} />
+          </Routes>
+        </div>
       </div>
-
     </BrowserRouter>
   );
 }
 
 export default App;
-

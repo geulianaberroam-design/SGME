@@ -1,29 +1,176 @@
-/* Estilos generales del sitio */
-body{
-    margin:0;
-    background:#eef2f9;
-    font-family:Arial, Helvetica, sans-serif;
+/* ==========================================
+   ESTILOS GENERALES Y BASE
+   ========================================== */
+body {
+    margin: 0;
+    background-color: #eef2f9;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #1f2937;
 }
 
-/* Botón Registrar Estudiante */
-.btn-registrar{
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    padding: 10px 20px;
+/* Contenedor principal de la aplicación */
+.app-container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* ==========================================
+   BARRA LATERAL (SIDEBAR)
+   ========================================== */
+.sidebar {
+    width: 240px;
+    min-height: 100vh;
+    background-color: #1d3b8f;
+    color: #ffffff;
+    padding: 20px 15px;
+    flex-shrink: 0;
+    transition: width 0.3s ease;
+    box-sizing: border-box;
+}
+
+/* Sidebar colapsado */
+.sidebar.collapsed {
+    width: 80px;
+}
+
+/* Logo */
+.logo {
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar.collapsed .logo {
+    justify-content: center;
+    min-height: 70px;
+}
+
+/* Lista y opciones del menú */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    padding: 12px 15px;
+    cursor: pointer;
     border-radius: 8px;
+    margin-bottom: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.sidebar li:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar li.active {
+    background-color: #3457c8;
+}
+
+/* Corrección de enlaces dentro del Sidebar */
+.sidebar a {
+    color: #ffffff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.sidebar.collapsed li {
+    justify-content: center;
+    padding: 15px 0;
+}
+
+/* Ocultar texto al colapsar */
+.sidebar.collapsed .menu-text,
+.sidebar.collapsed .logo-text,
+.sidebar.collapsed small {
+    display: none;
+}
+
+/* Botón cerrar sesión */
+.logout {
+    margin-top: 100px;
+    width: 100%;
+}
+
+/* Botón hamburguesa (Toggle Menu) */
+.menu-btn {
+    border: none;
+    background: transparent;
+    font-size: 24px;
+    cursor: pointer;
+    color: #374151;
+}
+
+.menu-btn:hover {
+    color: #1d3b8f;
+}
+
+/* ==========================================
+   ÁREA DE CONTENIDO PRINCIPAL
+   ========================================== */
+.content {
+    flex: 1;
+    padding: 30px;
+    transition: all 0.3s ease;
+    overflow: auto;
+}
+
+/* Encabezado */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h4 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.header small {
+    font-size: 14px;
+    color: #7d8ca3;
+}
+
+.header .fecha {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* Tarjeta de bienvenida (Hero) */
+.hero {
+    background: linear-gradient(90deg, #284dcf, #3869ff);
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 40px;
+    margin-top: 20px;
+}
+
+.hero h1 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.panel-control {
+    display: block;
+    font-size: 15px;
     font-weight: 600;
-    transition: 0.3s;
+    color: #dbeafe;
+    margin-bottom: 10px;
 }
 
-/* Efecto al pasar el mouse */
-.btn-registrar:hover{
-    background-color: #2563eb;
-    color: white;
-}
-
-/* Estilo común para ambos botones */
-.btn-accion{
+/* ==========================================
+   BOTONES
+   ========================================== */
+.btn-accion {
     width: 160px;
     height: 42px;
     display: inline-flex;
@@ -34,179 +181,62 @@ body{
     font-weight: 600;
     white-space: nowrap;
     border-radius: 8px;
-}
-.btn-success{
-    background-color: #22c55e;
+    cursor: pointer;
     border: none;
 }
 
-.btn-success:hover{
+.btn-registrar {
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-registrar:hover {
+    background-color: #2563eb;
+    color: #ffffff;
+}
+
+.btn-success {
+    background-color: #22c55e;
+    color: #ffffff;
+    border: none;
+}
+
+.btn-success:hover {
     background-color: #16a34a;
 }
-/* Barra lateral */
-.sidebar{
-    width:240px;
-    min-height:100vh;
-    background:#1d3b8f;
-    color:white;
-    padding:20px;
-}
-
-/* Lista del menú */
-.sidebar ul{
-    list-style:none;
-    padding:0;
-}
-
-/* Cada opción del menú */
-.sidebar li{
-    padding:15px;
-    cursor:pointer;
-}
-
-/* Opción seleccionada */
-.sidebar li.active{
-    background:#3457c8;
-    border-radius:8px;
-}
-
-/* Logo del sistema */
-.logo{
-    margin-bottom:30px;
-}
-
-/* Botón cerrar sesión */
-.logout{
-    margin-top:100px;
-    width:100%;
-}
-
-/* Área principal */
-.content{
-    flex:1;
-    padding:30px;
-}
-
-/* Encabezado */
-.header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-/* Título del sistema */
-.header h4{
-    font-size: 22px;
-    font-weight: 700;
-    margin: 0;
-}
-
-/* Subtítulo */
-.header small{
-    font-size: 14px;
-    color: #7d8ca3;
-}
-
-/* Fecha */
-.header .fecha{
-    font-size: 14px;
-    color: #6b7280;
-}
-
-/* Tarjeta de bienvenida */
-.hero{
-    background:linear-gradient(90deg,#284dcf,#3869ff);
-    color:white;
-    border-radius:20px;
-    padding:40px;
-    margin-top:20px;
-}
-.hero h1{
-    font-size: 30px;
-    font-weight: 700;
-    margin-bottom: 15px;
-    white-space: nowrap;
-}
-/* ===========================
-   Sidebar colapsable
-=========================== */
-
-.sidebar{
-    width:240px;
-    min-height:100vh;
-    transition:all .3s ease;
-}
-
-.sidebar.collapsed{
-    width:80px;
-}
-
-.sidebar ul{
-    padding:0;
-    list-style:none;
-}
-
-.sidebar li{
-    display:flex;
-    align-items:center;
-    gap:15px;
-    padding:15px;
-    cursor:pointer;
-}
-
-.sidebar.collapsed li{
-    justify-content:center;
-}
-
-.sidebar.collapsed .logo{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:70px;
-}
-
-.menu-btn{
-    border:none;
-    background:transparent;
-    font-size:28px;
-    cursor:pointer;
-}
-
-.menu-btn:hover{
-    color:#1d3b8f;
-}
-/* Contenedor principal */
-.app-container{
-    display: flex;
+/* Ajustes de maquetación del Dashboard */
+.dashboard-content {
     width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-/* Sidebar */
-.sidebar{
-    width:240px;
-    min-height:100vh;
-    transition:width .3s ease;
-    flex-shrink:0;
+/* Redondear tarjetas internas */
+.dashboard-content .card,
+.dashboard-content > div {
+    border-radius: 16px;
 }
 
-/* Sidebar colapsado */
-.sidebar.collapsed{
-    width:80px;
+/* Ajuste de tabla compacta para encajar sin barra de scroll */
+.table-compact {
+    width: 100%;
+    table-layout: auto;
 }
 
-/* Contenido principal */
-.content{
-    flex:1;
-    padding:30px;
-    transition:all .3s ease;
-    overflow:auto;
+.table-compact th, 
+.table-compact td {
+    padding: 12px 6px !important; /* Espaciado lateral más ajustado */
+    font-size: 13px;
 }
 
-/* Texto "Panel de Control" */
-.panel-control{
-    display:block;
-    font-size:15px;
-    font-weight:600;
-    color:#dbeafe; /* Un azul claro o blanco suave */
-    margin-bottom:10px;
+.table-compact th {
+    font-size: 11px;
+    letter-spacing: 0.4px;
 }
 

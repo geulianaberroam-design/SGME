@@ -1,56 +1,34 @@
-// Importa todos los componentes que forman el panel principal
-import Header from "../components/Header";
+import React from 'react';
 import Hero from "../components/Hero";
 import Stats from "../components/Stats";
 import RecentTable from "../components/RecentTable";
 import Calendar from "../components/Calendar";
 import Notifications from "../components/Notifications";
 
-// Recibe las propiedades enviadas desde App.jsx
-function Dashboard({ collapsed, setCollapsed }) {
-
+function Dashboard() {
   return (
-
-    // Contenedor principal del Dashboard
-    <div className="content">
-
-      {/* Encabezado superior */}
-      <Header
-        collapsed={collapsed}
-        setCollapsed={setCollapsed}
-      />
-
-      {/* Tarjeta de bienvenida */}
+    <div className="dashboard-content d-flex flex-column gap-4">
+      {/* 1. Tarjeta principal de bienvenida */}
       <Hero />
 
-      {/* Tarjetas de estadísticas */}
+      {/* 2. Tarjetas de métricas y estadísticas */}
       <Stats />
 
-      {/* Sección inferior */}
-      <div className="row mt-4">
-
-        {/* Tabla de matrículas */}
-        <div className="col-lg-8">
+      {/* 3. Sección inferior: Tabla a la izquierda, Calendario y Notificaciones a la derecha */}
+      <div className="row g-4">
+        {/* Columna Izquierda: Tabla de Matrículas Recientes */}
+        <div className="col-12 col-xl-8">
           <RecentTable />
         </div>
 
-        {/* Panel derecho */}
-        <div className="col-lg-4">
-
-          {/* Calendario */}
+        {/* Columna Derecha: Calendario + Notificaciones */}
+        <div className="col-12 col-xl-4 d-flex flex-column gap-4">
           <Calendar />
-
-          {/* Notificaciones */}
           <Notifications />
-
         </div>
-
       </div>
-
     </div>
-
   );
-
 }
 
 export default Dashboard;
