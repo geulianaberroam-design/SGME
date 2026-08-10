@@ -8,3 +8,9 @@
 2026-08-09 04:48:37,267 - [INFO] - Se registró un estudiante: Adriana Lopez Adco
 2026-08-09 04:57:26,202 - [INFO] - El usuario salió del sistema.
 2026-08-09 05:01:56,709 - [INFO] - El usuario salió del sistema.
+2026-08-09 12:25:24,513 - [INFO] - Se registró el grado y sección: 1 - A
+2026-08-09 16:35:12,512 - [INFO] - Se registró matrícula ID 1 para Adriana Lopez Adco.
+2026-08-09 17:48:00,170 - [INFO] - Se registró matrícula ID 3 para Adriana Lopez Adco.
+2026-08-09 18:37:12,908 - [INFO] - El usuario salió del sistema.
+2026-08-09 18:39:59,416 - [INFO] - Se registró pago ID 1 para matrícula 1.
+2026-08-09 19:19:05,908 - [INFO] - El usuario salió del sistema.
