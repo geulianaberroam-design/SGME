@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 function Hero() {
+
+  const navigate = useNavigate();
 
   return (
 
@@ -17,21 +21,28 @@ function Hero() {
 
       {/* Descripción */}
       <p>
-        Año Escolar 2025 · Proceso de Matrícula en Curso
+        Año Escolar {new Date().getFullYear()} · Proceso de Matrícula en Curso
       </p>
 
       {/* Botones de acción */}
-      <button className="btn btn-success btn-accion me-2">
-           + Nueva Matrícula
+
+      <button
+        className="btn btn-success btn-accion me-2"
+        onClick={() => navigate("/matriculas")}
+      >
+        + Nueva Matrícula
       </button>
 
-      <button className="btn btn-registrar btn-accion">
-            Registrar Estudiante
-       </button>
+      <button
+        className="btn btn-registrar btn-accion"
+        onClick={() => navigate("/estudiantes")}
+      >
+        Registrar Estudiante
+      </button>
+
     </div>
 
   );
-
 }
 
 export default Hero;
