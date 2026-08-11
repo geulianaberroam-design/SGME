@@ -1215,3 +1215,464 @@ y el servidor Flask debe quedar levantado en:
 ```text
 http://127.0.0.1:5000
 ```
+
+# DEPENDENCIAS DEL PROYECTO SGME
+
+El proyecto necesita dependencias tanto para el **backend** como para el **frontend**.
+
+---
+
+## 1. DEPENDENCIAS DEL BACKEND
+
+El backend está desarrollado con Python y Flask.
+
+Las principales dependencias utilizadas son:
+
+```text
+Flask
+flask-cors
+psycopg2-binary
+```
+
+### ¿Para qué sirve cada una?
+
+```text
+Flask
+```
+
+Permite crear el servidor web y los endpoints de la API.
+
+```text
+flask-cors
+```
+
+Permite que el frontend React pueda realizar peticiones al backend Flask desde otro puerto.
+
+Por ejemplo:
+
+```text
+React: http://localhost:5173
+Flask: http://127.0.0.1:5000
+```
+
+```text
+psycopg2-binary
+```
+
+Permite conectar Python con PostgreSQL.
+
+---
+
+## 2. INSTALAR DEPENDENCIAS DEL BACKEND
+
+Entrar a la carpeta:
+
+```bat
+cd Matricula_api
+```
+
+Instalar:
+
+```bat
+python -m pip install flask flask-cors psycopg2-binary
+```
+
+Después ejecutar:
+
+```bat
+python app.py
+```
+
+---
+
+## 3. ARCHIVO requirements.txt
+
+Dentro de:
+
+```text
+Matricula_api
+```
+
+debe existir:
+
+```text
+requirements.txt
+```
+
+Contenido:
+
+```txt
+Flask
+flask-cors
+psycopg2-binary
+```
+
+De esta manera, cuando el proyecto se abra en otra computadora, solamente se necesita ejecutar:
+
+```bat
+python -m pip install -r requirements.txt
+```
+
+No será necesario instalar cada dependencia manualmente.
+
+---
+
+# 4. DEPENDENCIAS DEL FRONTEND
+
+El frontend está desarrollado con React y Vite.
+
+Las principales dependencias utilizadas son:
+
+```text
+React
+React DOM
+Vite
+Axios
+Bootstrap
+Bootstrap Icons
+React Router DOM
+React Bootstrap Icons
+```
+
+---
+
+## 5. ¿PARA QUÉ SIRVE CADA DEPENDENCIA?
+
+### React
+
+```text
+react
+```
+
+Permite crear los componentes y páginas de la interfaz.
+
+---
+
+### React DOM
+
+```text
+react-dom
+```
+
+Permite renderizar la aplicación React en el navegador.
+
+---
+
+### Vite
+
+```text
+vite
+```
+
+Se utiliza para ejecutar y construir el proyecto React.
+
+El comando utilizado es:
+
+```bat
+npm run dev
+```
+
+---
+
+### Axios
+
+```text
+axios
+```
+
+Permite que React se comunique con Flask.
+
+Ejemplo:
+
+```javascript
+api.get("/estudiantes");
+```
+
+La comunicación es:
+
+```text
+React
+  ↓
+Axios
+  ↓
+Flask
+```
+
+---
+
+### Bootstrap
+
+```text
+bootstrap
+```
+
+Se utiliza para los estilos de la interfaz, formularios, botones, tablas y otros componentes visuales.
+
+---
+
+### Bootstrap Icons
+
+```text
+bootstrap-icons
+```
+
+Proporciona los iconos utilizados en la interfaz.
+
+Por ejemplo:
+
+```html
+<i className="bi bi-list"></i>
+<i className="bi bi-bell"></i>
+<i className="bi bi-calendar3"></i>
+```
+
+---
+
+### React Router DOM
+
+```text
+react-router-dom
+```
+
+Permite navegar entre las diferentes páginas del sistema.
+
+Por ejemplo:
+
+```text
+/
+/estudiantes
+/apoderados
+/matriculas
+/grados
+/pagos
+/documentos
+```
+
+---
+
+### React Bootstrap Icons
+
+```text
+react-bootstrap-icons
+```
+
+Permite utilizar iconos de Bootstrap directamente como componentes de React.
+
+---
+
+# 6. INSTALAR DEPENDENCIAS DEL FRONTEND
+
+Entrar a:
+
+```bat
+cd InterfazSistema
+```
+
+Ejecutar:
+
+```bat
+npm install
+```
+
+Este es el comando recomendado.
+
+`npm install` lee automáticamente:
+
+```text
+package.json
+package-lock.json
+```
+
+y descarga las dependencias necesarias.
+
+---
+
+## 7. INSTALACIÓN MANUAL DEL FRONTEND
+
+Si falta alguna dependencia, se pueden instalar manualmente:
+
+```bat
+npm install axios bootstrap bootstrap-icons react-router-dom react-bootstrap-icons
+```
+
+React, React DOM y Vite normalmente ya están declarados en el proyecto creado con Vite.
+
+---
+
+# 8. ARCHIVOS IMPORTANTES PARA LAS DEPENDENCIAS
+
+## Backend
+
+```text
+Matricula_api/
+└── requirements.txt
+```
+
+Este archivo guarda las dependencias de Python.
+
+Contenido:
+
+```txt
+Flask
+flask-cors
+psycopg2-binary
+```
+
+---
+
+## Frontend
+
+```text
+InterfazSistema/
+├── package.json
+└── package-lock.json
+```
+
+Estos archivos guardan las dependencias utilizadas por React.
+
+Por eso deben subirse a GitHub.
+
+---
+
+# 9. NO SUBIR node_modules
+
+No es necesario subir:
+
+```text
+node_modules/
+```
+
+a GitHub.
+
+La carpeta puede reconstruirse en cualquier computadora ejecutando:
+
+```bat
+npm install
+```
+
+---
+
+# 10. RESUMEN DE DEPENDENCIAS
+
+## Backend
+
+```text
+Python
+├── Flask
+├── flask-cors
+└── psycopg2-binary
+```
+
+Instalación:
+
+```bat
+python -m pip install flask flask-cors psycopg2-binary
+```
+
+O:
+
+```bat
+python -m pip install -r requirements.txt
+```
+
+---
+
+## Frontend
+
+```text
+Node.js / npm
+├── React
+├── React DOM
+├── Vite
+├── Axios
+├── Bootstrap
+├── Bootstrap Icons
+├── React Router DOM
+└── React Bootstrap Icons
+```
+
+Instalación:
+
+```bat
+npm install
+```
+
+Si faltan paquetes:
+
+```bat
+npm install axios bootstrap bootstrap-icons react-router-dom react-bootstrap-icons
+```
+
+---
+
+# 11. PROGRAMAS NECESARIOS EN OTRA COMPUTADORA
+
+Además de las dependencias, la computadora debe tener instalados:
+
+```text
+Python
+Node.js
+npm
+PostgreSQL
+pgAdmin 4
+Git
+```
+
+Visual Studio Code es recomendado para editar y ejecutar el proyecto.
+
+---
+
+# 12. INSTALACIÓN RÁPIDA EN OTRA COMPUTADORA
+
+## Backend
+
+```bat
+cd Matricula_api
+
+python -m pip install -r requirements.txt
+
+python app.py
+```
+
+Debe levantar:
+
+```text
+http://127.0.0.1:5000
+```
+
+## Frontend
+
+Abrir otra terminal:
+
+```bat
+cd InterfazSistema
+
+npm install
+
+npm run dev
+```
+
+Debe levantar:
+
+```text
+http://localhost:5173
+```
+
+El sistema finalmente queda conectado así:
+
+```text
+React
+localhost:5173
+      ↓
+Axios
+      ↓
+Flask
+127.0.0.1:5000
+      ↓
+DAO
+      ↓
+psycopg2
+      ↓
+PostgreSQL
+MatriculaEscolar
+```
